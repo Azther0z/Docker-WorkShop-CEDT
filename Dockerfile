@@ -24,6 +24,13 @@ COPY app/ .
 # TODO(step-4d): set the runtime base image (same tag as step-4a for consistency).
 FROM node:20.11-slim
 
+# Patch Debian packages from the pinned base image, then remove npm because the
+# runtime only needs Node.js (npm is used in the builder stage).
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 WORKDIR /app
 
 # TODO(step-4e): copy the fully-installed app from the builder stage.
